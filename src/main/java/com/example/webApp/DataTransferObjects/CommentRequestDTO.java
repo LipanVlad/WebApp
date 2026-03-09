@@ -1,6 +1,6 @@
 package com.example.webApp.DataTransferObjects;
 
-public class CommentDTO {
+public class CommentRequestDTO {
     private String body;
 
     public String getBody() {

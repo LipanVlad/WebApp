@@ -45,12 +45,16 @@ public class User {
         this.password = password;
     }
 
-    public long getId() {
-        return id;
+    public List<Comment> getCommentList() {
+        return commentList;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getUsername() {

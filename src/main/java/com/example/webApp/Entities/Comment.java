@@ -3,6 +3,8 @@ package com.example.webApp.Entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "comments")
@@ -14,16 +16,34 @@ public class Comment {
     private LocalDateTime creationTime;
     @ManyToOne
     private User owner;
-
     @ManyToOne
     private Post post;
 
-    public Long getId() {
-        return id;
+    @ManyToOne
+    private Comment parentComment;
+
+    @OrderBy("creationTime ASC")
+    @OneToMany(mappedBy = "parentComment")
+    private List<Comment> replies = new ArrayList<>();
+
+    public Comment getParentComment() {
+        return parentComment;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setParentComment(Comment parentComment) {
+        this.parentComment = parentComment;
+    }
+
+    public List<Comment> getReplies() {
+        return replies;
+    }
+
+    public void setReplies(List<Comment> replies) {
+        this.replies = replies;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getBody() {

@@ -1,6 +1,7 @@
 package com.example.webApp.Controllers;
 
-import com.example.webApp.DataTransferObjects.CommentDTO;
+import com.example.webApp.DataTransferObjects.CommentRequestDTO;
+import com.example.webApp.DataTransferObjects.CommentResponseDTO;
 import com.example.webApp.Services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +17,15 @@ public class CommentController {
     public CommentController(CommentService service){
         this.service = service;
     }
-    @PostMapping("{postId}/add/comment")
-    public ResponseEntity<?> addComment(@RequestBody CommentDTO commentDTO, @PathVariable Long postId){
-        service.checkAndSaveComment(commentDTO, postId);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Comment added");
+    @PostMapping("{postId}/add/root/comment")
+    public ResponseEntity<?> addRootComment(@RequestBody CommentRequestDTO commentRequestDTO, @PathVariable Long postId){
+        CommentResponseDTO commentResponseDTO = service.checkAndSaveRootComment(commentRequestDTO, postId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);
+    }
+
+    @PostMapping("{parentCommentId}/add/child/comment")
+    public ResponseEntity<?> addChildComment (@RequestBody CommentRequestDTO commentRequestDTO, @PathVariable Long parentCommentId){
+        CommentResponseDTO commentResponseDTO = service.checkAndSaveChildComment(commentRequestDTO, parentCommentId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);
     }
 }
