@@ -1,6 +1,6 @@
 package com.example.webApp.DataTransferObjects;
 
-public class PostDTO {
+public class PostRequestDTO {
     private String title;
     private String body;
 

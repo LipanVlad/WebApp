@@ -1,7 +1,10 @@
 package com.example.webApp.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,11 +15,16 @@ public class Community {
     private Long id;
     private String name;
     private String description;
-    @ManyToOne
+    private LocalDateTime creationTime;
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
     @OneToMany(mappedBy = "community")
-    private List<Post> postList;
+    @JsonIgnore
+    private List<Post> postList = new ArrayList<>();
+
+    public Community() {}
+
 
     public Long getId() {
         return id;
@@ -53,4 +61,13 @@ public class Community {
     public void setPostList(List<Post> postList) {
         this.postList = postList;
     }
+
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
+
+    public void setCreationTime(LocalDateTime creationTime) {
+        this.creationTime = creationTime;
+    }
+
 }

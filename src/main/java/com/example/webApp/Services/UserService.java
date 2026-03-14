@@ -1,6 +1,7 @@
 package com.example.webApp.Services;
 
-import com.example.webApp.DataTransferObjects.UserDTO;
+import com.example.webApp.DataTransferObjects.UserRequestDTO;
+import com.example.webApp.DataTransferObjects.UserResponseDTO;
 import com.example.webApp.Entities.User;
 import com.example.webApp.Exceptions.NameAlreadyExistsException;
 import com.example.webApp.Exceptions.InvalidInputException;
@@ -8,6 +9,7 @@ import com.example.webApp.Repositories.UserRepo;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -20,30 +22,40 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    private void credentialCheck(UserDTO userDto){
-        if (userDto.getUsername() == null || userDto.getUsername().isEmpty() ||
-                userDto.getPassword() == null || userDto.getPassword().isEmpty()) {
+    private UserResponseDTO userToDTO(User user){
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+
+        userResponseDTO.setId(user.getId());
+        userResponseDTO.setUsername(user.getUsername());
+        userResponseDTO.setCreationTime(user.getCreationTime());
+
+        return userResponseDTO;
+    }
+
+    private void credentialCheck(UserRequestDTO userRequestDTO){
+        if (userRequestDTO.getUsername() == null || userRequestDTO.getUsername().isEmpty() ||
+                userRequestDTO.getPassword() == null || userRequestDTO.getPassword().isEmpty()) {
             throw new InvalidInputException("Invalid credentials");
         }
     }
-    public void checkAndRegisterUser(UserDTO userDto){
-        credentialCheck(userDto);
+    public UserResponseDTO registerUser(UserRequestDTO userRequestDTO){
+        credentialCheck(userRequestDTO);
 
-        Optional<User> optionalUser = userRepo.findByUsername(userDto.getUsername());
+        Optional<User> optionalUser = userRepo.findByUsername(userRequestDTO.getUsername());
         if(optionalUser.isPresent()){
             throw new NameAlreadyExistsException("Username already exists");
         }
 
         User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setPassword(userDto.getPassword());
-
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setUsername(userRequestDTO.getUsername());
+        user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        user.setCreationTime(LocalDateTime.now());
         userRepo.save(user);
+        UserResponseDTO userResponseDTO = userToDTO(user);
+        return userResponseDTO;
     }
 
-    public void checkAndLoginUser(UserDTO userDto){
+    public void loginUser(UserRequestDTO userDto){
         credentialCheck(userDto);
 
         Optional<User> optionalUser = userRepo.findByUsername(userDto.getUsername());

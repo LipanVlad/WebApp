@@ -1,6 +1,7 @@
 package com.example.webApp.Controllers;
 
-import com.example.webApp.DataTransferObjects.CommunityDTO;
+import com.example.webApp.DataTransferObjects.CommunityRequestDTO;
+import com.example.webApp.DataTransferObjects.CommunityResponseDTO;
 import com.example.webApp.Services.CommunityService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +17,8 @@ public class CommunityController {
     }
 
     @PostMapping("/add/community")
-    public ResponseEntity<?> addCommunity(@RequestBody CommunityDTO communityDTO){
-        service.checkAndSaveCommunity(communityDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Community added");
+    public ResponseEntity<?> addCommunity(@RequestBody CommunityRequestDTO communityRequestDTO){
+         CommunityResponseDTO communityResponseDTO = service.checkAndSaveCommunity(communityRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(communityResponseDTO);
     }
 }

@@ -1,6 +1,6 @@
 package com.example.webApp.DataTransferObjects;
 
-public class CommunityDTO {
+public class CommunityRequestDTO {
     private String name;
     private String description;
 

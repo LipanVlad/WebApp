@@ -1,6 +1,7 @@
 package com.example.webApp.Controllers;
 
-import com.example.webApp.DataTransferObjects.UserDTO;
+import com.example.webApp.DataTransferObjects.UserRequestDTO;
+import com.example.webApp.DataTransferObjects.UserResponseDTO;
 import com.example.webApp.Services.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody UserDTO userDto){
-        service.checkAndRegisterUser(userDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("User added");
+    public ResponseEntity<?> registerUser(@RequestBody UserRequestDTO userRequestDTO){
+        UserResponseDTO userResponseDTO = service.registerUser(userRequestDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody UserDTO userDto){
-        service.checkAndLoginUser(userDto);
+    public ResponseEntity<?> loginUser(@RequestBody UserRequestDTO userDto){
+        service.loginUser(userDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Logged in");
     }
 }

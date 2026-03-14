@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommentResponseDTO {
-    private long commentId;
+    private long id;
     private String body;
     private LocalDateTime creationTime;
     private long userId;
@@ -13,12 +13,12 @@ public class CommentResponseDTO {
     private Long parentCommentId;
     private List<CommentResponseDTO> replies = new ArrayList<>();
 
-    public long getCommentId() {
-        return commentId;
+    public long getId() {
+        return id;
     }
 
-    public void setCommentId(long commentId) {
-        this.commentId = commentId;
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getBody() {

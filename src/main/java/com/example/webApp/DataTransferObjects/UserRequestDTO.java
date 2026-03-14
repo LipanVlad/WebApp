@@ -1,6 +1,6 @@
 package com.example.webApp.DataTransferObjects;
 
-public class UserDTO {
+public class UserRequestDTO {
     private String username;
     private String password;
 

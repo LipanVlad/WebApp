@@ -1,6 +1,7 @@
 package com.example.webApp.Services;
 
-import com.example.webApp.DataTransferObjects.PostDTO;
+import com.example.webApp.DataTransferObjects.PostRequestDTO;
+import com.example.webApp.DataTransferObjects.PostResponseDTO;
 import com.example.webApp.Entities.Community;
 import com.example.webApp.Entities.Post;
 import com.example.webApp.Entities.User;
@@ -13,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class PostService {
     private final PostRepo postRepo;
@@ -23,11 +26,25 @@ public class PostService {
         this.userRepo = userRepo;
         this.communityRepo = communityRepo;
     }
-    public void checkAndSavePost(PostDTO postDTO, String communityName){
-        if(postDTO.getTitle() == null || postDTO.getTitle().isEmpty()){
+
+    private PostResponseDTO postToDTO(Post post){
+        PostResponseDTO postResponseDTO = new PostResponseDTO();
+
+        postResponseDTO.setId(post.getId());
+        postResponseDTO.setBody(post.getBody());
+        postResponseDTO.setCreationTime(post.getCreationTime());
+        postResponseDTO.setOwnerId(post.getOwner().getId());
+        postResponseDTO.setCommunityId(post.getCommunity().getId());
+        postResponseDTO.setTitle(post.getTitle());
+
+
+        return postResponseDTO;
+    }
+    public PostResponseDTO checkAndSavePost(PostRequestDTO postRequestDTO, String communityName){
+        if(postRequestDTO.getTitle() == null || postRequestDTO.getTitle().isEmpty()){
             throw new InvalidInputException("Post must have a valid title");
         }
-        if(postDTO.getBody().isEmpty()){
+        if(postRequestDTO.getBody() == null || postRequestDTO.getBody().isEmpty()){
             throw new InvalidInputException("Post must have a non-empty body");
         }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -40,10 +57,13 @@ public class PostService {
                 .orElseThrow(() -> new DoesNotExistException("Community does not exist anymore"));
 
         Post post = new Post();
-        post.setTitle(postDTO.getTitle());
-        post.setBody(postDTO.getBody());
+        post.setTitle(postRequestDTO.getTitle());
+        post.setBody(postRequestDTO.getBody());
         post.setOwner(owner);
         post.setCommunity(community);
+        post.setCreationTime(LocalDateTime.now());
         postRepo.save(post);
+        PostResponseDTO postResponseDTO = postToDTO(post);
+        return postResponseDTO;
     }
 }

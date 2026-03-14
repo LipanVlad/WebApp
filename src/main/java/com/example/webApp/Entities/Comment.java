@@ -1,5 +1,6 @@
 package com.example.webApp.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,17 +15,21 @@ public class Comment {
     private Long id;
     private String body;
     private LocalDateTime creationTime;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Post post;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentComment;
 
     @OrderBy("creationTime ASC")
     @OneToMany(mappedBy = "parentComment")
+    @JsonIgnore
     private List<Comment> replies = new ArrayList<>();
+
+    public Comment() {}
+
 
     public Comment getParentComment() {
         return parentComment;

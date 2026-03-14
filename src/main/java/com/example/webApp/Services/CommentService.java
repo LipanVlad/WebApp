@@ -33,7 +33,7 @@ public class CommentService {
     private CommentResponseDTO commentToDTO(Comment comment){
         CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
 
-        commentResponseDTO.setCommentId(comment.getId());
+        commentResponseDTO.setId(comment.getId());
         commentResponseDTO.setBody(comment.getBody());
         commentResponseDTO.setCreationTime(comment.getCreationTime());
         commentResponseDTO.setUserId(comment.getOwner().getId());
