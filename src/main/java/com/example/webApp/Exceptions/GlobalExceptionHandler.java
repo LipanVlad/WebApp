@@ -2,6 +2,7 @@ package com.example.webApp.Exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -24,6 +25,16 @@ public class GlobalExceptionHandler {
         return buildErrorMessage(e.getMessage(), e.getHttpStatus());
     }
 
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorMessage> handleValidationError (MethodArgumentNotValidException e){
+        String errorMessage = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(field -> field.getField() + ": " + field.getDefaultMessage())
+                .findFirst()
+                .orElse("Invalid input");
+        return buildErrorMessage(errorMessage, HttpStatus.BAD_REQUEST);
+    }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleGlobalError(Exception e) {
         return buildErrorMessage("An unexpected error has occured, please refresh", HttpStatus.INTERNAL_SERVER_ERROR);

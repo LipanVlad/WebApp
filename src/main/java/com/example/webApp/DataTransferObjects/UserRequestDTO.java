@@ -1,7 +1,12 @@
 package com.example.webApp.DataTransferObjects;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserRequestDTO {
+    @NotBlank(message = "Username cannot be empty")
     private String username;
+
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 
     public String getUsername() {

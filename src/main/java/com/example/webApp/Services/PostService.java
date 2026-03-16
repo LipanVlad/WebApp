@@ -41,12 +41,6 @@ public class PostService {
         return postResponseDTO;
     }
     public PostResponseDTO checkAndSavePost(PostRequestDTO postRequestDTO, String communityName){
-        if(postRequestDTO.getTitle() == null || postRequestDTO.getTitle().isEmpty()){
-            throw new InvalidInputException("Post must have a valid title");
-        }
-        if(postRequestDTO.getBody() == null || postRequestDTO.getBody().isEmpty()){
-            throw new InvalidInputException("Post must have a non-empty body");
-        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUserName = authentication.getName();
 

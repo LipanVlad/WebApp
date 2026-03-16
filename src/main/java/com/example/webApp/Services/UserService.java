@@ -3,6 +3,7 @@ package com.example.webApp.Services;
 import com.example.webApp.DataTransferObjects.UserRequestDTO;
 import com.example.webApp.DataTransferObjects.UserResponseDTO;
 import com.example.webApp.Entities.User;
+import com.example.webApp.Exceptions.DoesNotExistException;
 import com.example.webApp.Exceptions.NameAlreadyExistsException;
 import com.example.webApp.Exceptions.InvalidInputException;
 import com.example.webApp.Repositories.UserRepo;
@@ -32,15 +33,7 @@ public class UserService {
         return userResponseDTO;
     }
 
-    private void credentialCheck(UserRequestDTO userRequestDTO){
-        if (userRequestDTO.getUsername() == null || userRequestDTO.getUsername().isEmpty() ||
-                userRequestDTO.getPassword() == null || userRequestDTO.getPassword().isEmpty()) {
-            throw new InvalidInputException("Invalid credentials");
-        }
-    }
     public UserResponseDTO registerUser(UserRequestDTO userRequestDTO){
-        credentialCheck(userRequestDTO);
-
         Optional<User> optionalUser = userRepo.findByUsername(userRequestDTO.getUsername());
         if(optionalUser.isPresent()){
             throw new NameAlreadyExistsException("Username already exists");
@@ -56,14 +49,8 @@ public class UserService {
     }
 
     public void loginUser(UserRequestDTO userDto){
-        credentialCheck(userDto);
-
-        Optional<User> optionalUser = userRepo.findByUsername(userDto.getUsername());
-        if(optionalUser.isEmpty()){
-            throw new InvalidInputException("Invalid credentials");
-        }
-
-        User theUser = optionalUser.get();
+        User theUser = userRepo.findByUsername(userDto.getUsername())
+                .orElseThrow( () -> new DoesNotExistException("Invalid credentials"));
         if(!passwordEncoder.matches(userDto.getPassword(), theUser.getPassword())){
             throw new InvalidInputException("Invalid credentials");
         }

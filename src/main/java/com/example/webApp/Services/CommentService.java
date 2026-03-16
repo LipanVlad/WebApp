@@ -53,10 +53,6 @@ public class CommentService {
     }
 
     public CommentResponseDTO checkAndSaveRootComment(CommentRequestDTO commentRequestDTO, Long postId){
-        if(commentRequestDTO.getBody() == null || commentRequestDTO.getBody().isEmpty()){
-            throw new InvalidInputException("Comment body must be valid");
-        }
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUserName = authentication.getName();
 
@@ -79,9 +75,6 @@ public class CommentService {
     }
 
     public CommentResponseDTO checkAndSaveChildComment(CommentRequestDTO commentRequestDTO, Long parentCommentId){
-        if(commentRequestDTO.getBody() == null || commentRequestDTO.getBody().isEmpty()){
-            throw new InvalidInputException("Comment body must be valid");
-        }
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUserName = authentication.getName();
 

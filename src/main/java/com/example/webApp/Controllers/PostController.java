@@ -3,6 +3,7 @@ package com.example.webApp.Controllers;
 import com.example.webApp.DataTransferObjects.PostRequestDTO;
 import com.example.webApp.DataTransferObjects.PostResponseDTO;
 import com.example.webApp.Services.PostService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +15,7 @@ public class PostController {
         this.postService = postService;
     }
     @PostMapping("/{communityName}/add/post")
-    public ResponseEntity<?> addPost(@RequestBody PostRequestDTO postRequestDTO, @PathVariable String communityName){
+    public ResponseEntity<?> addPost(@Valid @RequestBody PostRequestDTO postRequestDTO, @PathVariable String communityName){
         PostResponseDTO postResponseDTO = postService.checkAndSavePost(postRequestDTO, communityName);
         return ResponseEntity.status(HttpStatus.CREATED).body(postResponseDTO);
     }

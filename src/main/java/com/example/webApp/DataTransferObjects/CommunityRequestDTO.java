@@ -1,7 +1,12 @@
 package com.example.webApp.DataTransferObjects;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class CommunityRequestDTO {
+    @NotBlank(message = "Name cannot be empty")
     private String name;
+
+    @NotBlank(message = "Description cannot be empty")
     private String description;
 
     public String getName() {

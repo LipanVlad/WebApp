@@ -1,7 +1,12 @@
 package com.example.webApp.DataTransferObjects;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class PostRequestDTO {
+    @NotBlank(message = "Title cannot be empty")
     private String title;
+
+    @NotBlank(message = "Body cannot be empty")
     private String body;
 
     public String getTitle() {

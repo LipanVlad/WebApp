@@ -3,6 +3,7 @@ package com.example.webApp.Controllers;
 import com.example.webApp.DataTransferObjects.CommunityRequestDTO;
 import com.example.webApp.DataTransferObjects.CommunityResponseDTO;
 import com.example.webApp.Services.CommunityService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +18,7 @@ public class CommunityController {
     }
 
     @PostMapping("/add/community")
-    public ResponseEntity<?> addCommunity(@RequestBody CommunityRequestDTO communityRequestDTO){
+    public ResponseEntity<?> addCommunity(@Valid @RequestBody CommunityRequestDTO communityRequestDTO){
          CommunityResponseDTO communityResponseDTO = service.checkAndSaveCommunity(communityRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(communityResponseDTO);
     }

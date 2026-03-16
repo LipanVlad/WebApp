@@ -38,13 +38,6 @@ public class CommunityService {
         return communityResponseDTO;
     }
     public CommunityResponseDTO checkAndSaveCommunity(CommunityRequestDTO communityRequestDTO){
-        if(communityRequestDTO.getName() == null || communityRequestDTO.getName().isEmpty()){
-            throw new InvalidInputException("Community must have a valid name");
-        }
-
-        if(communityRequestDTO.getDescription() == null || communityRequestDTO.getDescription().isEmpty()){
-            throw new InvalidInputException("Community must have a valid description");
-        }
         if(communityRepo.findByName(communityRequestDTO.getName()).isPresent()){
             throw new NameAlreadyExistsException("Community name is taken");
         }
