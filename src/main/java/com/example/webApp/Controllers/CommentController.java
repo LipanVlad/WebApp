@@ -18,13 +18,13 @@ public class CommentController {
     public CommentController(CommentService service){
         this.service = service;
     }
-    @PostMapping("{postId}/add/root/comment")
+    @PostMapping("/{postId}/add/root/comment")
     public ResponseEntity<?> addRootComment(@Valid @RequestBody CommentRequestDTO commentRequestDTO, @PathVariable Long postId){
         CommentResponseDTO commentResponseDTO = service.checkAndSaveRootComment(commentRequestDTO, postId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);
     }
 
-    @PostMapping("{parentCommentId}/add/child/comment")
+    @PostMapping("/{parentCommentId}/add/child/comment")
     public ResponseEntity<?> addChildComment (@Valid @RequestBody CommentRequestDTO commentRequestDTO, @PathVariable Long parentCommentId){
         CommentResponseDTO commentResponseDTO = service.checkAndSaveChildComment(commentRequestDTO, parentCommentId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);

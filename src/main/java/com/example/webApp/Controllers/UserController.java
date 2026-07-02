@@ -18,15 +18,15 @@ public class UserController {
         this.service = service;
     }
 
-    @PostMapping("/register")
+    @PostMapping("/auth/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody UserRequestDTO userRequestDTO){
         UserResponseDTO userResponseDTO = service.registerUser(userRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<?> loginUser(@Valid @RequestBody UserRequestDTO userDto){
-        service.loginUser(userDto);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Logged in");
+        UserResponseDTO userResponseDTO = service.loginUser(userDto);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
     }
 }

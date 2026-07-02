@@ -58,14 +58,15 @@ public class CommentService {
 
         Comment comment = new Comment();
         comment.setBody(commentRequestDTO.getBody());
+        comment.setCreationTime(LocalDateTime.now());
+        User owner = userRepo.findByUsername(loggedUserName)
+                .orElseThrow( () -> new DoesNotExistException("User does not exist anymore"));
+        comment.setOwner(owner);
         Post post = postRepo.findById(postId)
                         .orElseThrow( () -> new DoesNotExistException("Post does not exist anymore"));
         comment.setPost(post);
 
-        User owner = userRepo.findByUsername(loggedUserName)
-                        .orElseThrow( () -> new DoesNotExistException("User does not exist anymore"));
-        comment.setOwner(owner);
-        comment.setCreationTime(LocalDateTime.now());
+
         comment.setParentComment(null);
 
 
