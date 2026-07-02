@@ -1,5 +1,6 @@
 package com.example.webApp.Services;
 
+import com.example.webApp.Config.JwtUtil;
 import com.example.webApp.DataTransferObjects.UserRequestDTO;
 import com.example.webApp.DataTransferObjects.UserResponseDTO;
 import com.example.webApp.Entities.User;
@@ -17,10 +18,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     private UserResponseDTO userToDTO(User user){
@@ -29,7 +32,7 @@ public class UserService {
         userResponseDTO.setId(user.getId());
         userResponseDTO.setUsername(user.getUsername());
         userResponseDTO.setCreationTime(user.getCreationTime());
-
+        userResponseDTO.setToken(jwtUtil.generateToken(user.getUsername()));
         return userResponseDTO;
     }
 
@@ -48,11 +51,12 @@ public class UserService {
         return userResponseDTO;
     }
 
-    public void loginUser(UserRequestDTO userDto){
+    public UserResponseDTO loginUser(UserRequestDTO userDto){
         User theUser = userRepo.findByUsername(userDto.getUsername())
                 .orElseThrow( () -> new DoesNotExistException("Invalid credentials"));
         if(!passwordEncoder.matches(userDto.getPassword(), theUser.getPassword())){
             throw new InvalidInputException("Invalid credentials");
         }
+        return userToDTO(theUser);
     }
 }

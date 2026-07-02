@@ -4,6 +4,7 @@ public class UserResponseDTO {
     private Long id;
     private String username;
     private LocalDateTime creationTime;
+    private String token;
 
     public Long getId() {
         return id;
@@ -27,5 +28,13 @@ public class UserResponseDTO {
 
     public void setCreationTime(LocalDateTime creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
