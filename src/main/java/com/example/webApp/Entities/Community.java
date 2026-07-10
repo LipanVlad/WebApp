@@ -19,7 +19,7 @@ public class Community {
     @ManyToOne(fetch = FetchType.LAZY)
     private User owner;
 
-    @OneToMany(mappedBy = "community")
+    @OneToMany(mappedBy = "community", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private List<Post> postList = new ArrayList<>();
 

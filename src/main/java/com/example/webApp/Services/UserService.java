@@ -59,4 +59,13 @@ public class UserService {
         }
         return userToDTO(theUser);
     }
+
+    public void deleteUser(String userName){
+       User user = userRepo.findByUsername(userName)
+                .orElseThrow(() -> new DoesNotExistException("User not found"));
+       user.setPassword("<DELETED>");
+        user.setUsername("<DELETED>_" + user.getId());
+        user.setDeleted(true);
+       userRepo.save(user);
+    }
 }

@@ -37,6 +37,7 @@ public class GlobalExceptionHandler {
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorMessage> handleGlobalError(Exception e) {
+        e.printStackTrace();
         return buildErrorMessage("An unexpected error has occured, please refresh", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

@@ -55,4 +55,14 @@ public class CommunityService {
         CommunityResponseDTO communityResponseDTO = communityToDTO(community);
         return communityResponseDTO;
     }
+
+    public void deleteCommunity(Long communityId){
+        Community community = communityRepo.findById(communityId)
+                        .orElseThrow( () -> new DoesNotExistException("Community not found"));
+
+        communityRepo.delete(community);
+
+    }
+
+
 }

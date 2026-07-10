@@ -10,6 +10,4 @@ public class WebAppApplication {
 		SpringApplication.run(WebAppApplication.class, args);
 		System.out.println("Test");
 	}
-
-
 }

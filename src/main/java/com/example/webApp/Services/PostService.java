@@ -60,4 +60,10 @@ public class PostService {
         PostResponseDTO postResponseDTO = postToDTO(post);
         return postResponseDTO;
     }
+
+    public void deletePost(Long postId){
+        Post post = postRepo.findById(postId)
+                .orElseThrow( () -> new DoesNotExistException("Post not found"));
+        postRepo.delete(post);
+    }
 }
