@@ -6,9 +6,7 @@ import com.example.webApp.Services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
@@ -28,5 +26,11 @@ public class UserController {
     public ResponseEntity<?> loginUser(@Valid @RequestBody UserRequestDTO userDto){
         UserResponseDTO userResponseDTO = service.loginUser(userDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
+    }
+
+    @DeleteMapping("/users/{username}")
+    public ResponseEntity<?> deleteUser(@PathVariable String userName) {
+        service.deleteUser(userName);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

@@ -97,4 +97,11 @@ public class CommentService {
         CommentResponseDTO commentResponseDTO = commentToDTO(comment);
         return commentResponseDTO;
     }
+
+    public void deleteComment(Long commentId){
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new DoesNotExistException("Comment not found"));
+        comment.setBody("<DELETED>");
+        commentRepo.save(comment);
+    }
 }

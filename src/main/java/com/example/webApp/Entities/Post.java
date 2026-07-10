@@ -21,7 +21,7 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     private Community community;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
 

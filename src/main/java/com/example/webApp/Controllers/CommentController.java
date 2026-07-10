@@ -6,10 +6,7 @@ import com.example.webApp.Services.CommentService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class CommentController {
@@ -28,5 +25,11 @@ public class CommentController {
     public ResponseEntity<?> addChildComment (@Valid @RequestBody CommentRequestDTO commentRequestDTO, @PathVariable Long parentCommentId){
         CommentResponseDTO commentResponseDTO = service.checkAndSaveChildComment(commentRequestDTO, parentCommentId);
         return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDTO);
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable Long commentId) {
+        service.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

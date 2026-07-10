@@ -16,6 +16,7 @@ public class User {
     private String username;
     private String password;
     private LocalDateTime creationTime;
+    private boolean isDeleted;
 
     @OneToMany(mappedBy = "owner")
     @JsonIgnore
@@ -29,7 +30,7 @@ public class User {
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
 
-    public User() {}
+    public User() {isDeleted = false;}
 
 
     public List<Community> getCommunityList() {
@@ -82,5 +83,13 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }
