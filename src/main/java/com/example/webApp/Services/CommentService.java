@@ -2,7 +2,9 @@ package com.example.webApp.Services;
 
 import com.example.webApp.DataTransferObjects.CommentRequestDTO;
 import com.example.webApp.DataTransferObjects.CommentResponseDTO;
+import com.example.webApp.DataTransferObjects.CommunityResponseDTO;
 import com.example.webApp.Entities.Comment;
+import com.example.webApp.Entities.Community;
 import com.example.webApp.Entities.Post;
 import com.example.webApp.Entities.User;
 import com.example.webApp.Exceptions.DoesNotExistException;
@@ -14,8 +16,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +34,7 @@ public class CommentService {
         this.userRepo = userRepo;
     }
 
-    private CommentResponseDTO commentToDTO(Comment comment){
+    public CommentResponseDTO commentToDTO(Comment comment){
         CommentResponseDTO commentResponseDTO = new CommentResponseDTO();
 
         commentResponseDTO.setId(comment.getId());
@@ -103,5 +107,32 @@ public class CommentService {
                 .orElseThrow(() -> new DoesNotExistException("Comment not found"));
         comment.setBody("<DELETED>");
         commentRepo.save(comment);
+    }
+    public CommentResponseDTO patchComment(CommentRequestDTO commentRequestDTO, Long commentId){
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new DoesNotExistException("Comment does not exist"));
+
+        if(commentRequestDTO.getBody()!=null && !commentRequestDTO.getBody().equalsIgnoreCase(comment.getBody())){
+            comment.setBody(commentRequestDTO.getBody());
+        }
+        commentRepo.save(comment);
+        CommentResponseDTO commentResponseDTO = commentToDTO(comment);
+        return commentResponseDTO;
+    }
+    public CommentResponseDTO getComment(Long commentId){
+        Comment comment = commentRepo.findById(commentId)
+                .orElseThrow(() -> new DoesNotExistException("Comment does not exist"));
+        return commentToDTO(comment);
+    }
+    public List<CommentResponseDTO> getComments(){
+        List<Comment> commentList = commentRepo.findAll();
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+
+        for(Comment c : commentList){
+            if(c.getParentComment()==null){
+                commentResponseDTOList.add(commentToDTO(c));
+            }
+        }
+        return commentResponseDTOList;
     }
 }
