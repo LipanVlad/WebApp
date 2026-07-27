@@ -1,8 +1,11 @@
 package com.example.webApp.Services;
 
 import com.example.webApp.Config.JwtUtil;
+import com.example.webApp.DataTransferObjects.PostRequestDTO;
+import com.example.webApp.DataTransferObjects.PostResponseDTO;
 import com.example.webApp.DataTransferObjects.UserRequestDTO;
 import com.example.webApp.DataTransferObjects.UserResponseDTO;
+import com.example.webApp.Entities.Post;
 import com.example.webApp.Entities.User;
 import com.example.webApp.Exceptions.DoesNotExistException;
 import com.example.webApp.Exceptions.NameAlreadyExistsException;
@@ -12,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -68,4 +73,35 @@ public class UserService {
         user.setDeleted(true);
        userRepo.save(user);
     }
+
+    public UserResponseDTO patchUser(UserRequestDTO userRequestDTO, Long userId){
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new DoesNotExistException("User does not exist"));
+
+        if(userRequestDTO.getUsername() != null && !userRequestDTO.getUsername().equalsIgnoreCase(user.getUsername())){
+            user.setUsername(userRequestDTO.getUsername());
+        }
+        if(userRequestDTO.getPassword() != null && !passwordEncoder.matches(userRequestDTO.getPassword(), user.getPassword())){
+            user.setPassword(passwordEncoder.encode(userRequestDTO.getPassword()));
+        }
+        userRepo.save(user);
+        UserResponseDTO userResponseDTO = userToDTO(user);
+        return userResponseDTO;
+    }
+
+    public UserResponseDTO getUser(Long userId){
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new DoesNotExistException("User does not exist"));
+        UserResponseDTO userResponseDTO = userToDTO(user);
+        return userResponseDTO;
+    }
+    public List<UserResponseDTO> getUsers(){
+        List<User> users = userRepo.findAll();
+        List<UserResponseDTO> userResponseDTOList = new ArrayList<>();
+        for (User u : users) {
+            userResponseDTOList.add(userToDTO(u));
+        }
+        return userResponseDTOList;
+    }
+
 }

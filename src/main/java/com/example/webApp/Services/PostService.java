@@ -1,7 +1,7 @@
 package com.example.webApp.Services;
 
-import com.example.webApp.DataTransferObjects.PostRequestDTO;
-import com.example.webApp.DataTransferObjects.PostResponseDTO;
+import com.example.webApp.DataTransferObjects.*;
+import com.example.webApp.Entities.Comment;
 import com.example.webApp.Entities.Community;
 import com.example.webApp.Entities.Post;
 import com.example.webApp.Entities.User;
@@ -15,19 +15,24 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PostService {
     private final PostRepo postRepo;
     private final UserRepo userRepo;
     private final CommunityRepo communityRepo;
-    public PostService(PostRepo postRepo, UserRepo userRepo, CommunityRepo communityRepo){
+    private final CommentService commentService;
+
+    public PostService(PostRepo postRepo, UserRepo userRepo, CommunityRepo communityRepo, CommentService commentService) {
         this.postRepo = postRepo;
         this.userRepo = userRepo;
         this.communityRepo = communityRepo;
+        this.commentService = commentService;
     }
 
-    private PostResponseDTO postToDTO(Post post){
+    public PostResponseDTO postToDTO(Post post) {
         PostResponseDTO postResponseDTO = new PostResponseDTO();
 
         postResponseDTO.setId(post.getId());
@@ -40,7 +45,8 @@ public class PostService {
 
         return postResponseDTO;
     }
-    public PostResponseDTO checkAndSavePost(PostRequestDTO postRequestDTO, String communityName){
+
+    public PostResponseDTO checkAndSavePost(PostRequestDTO postRequestDTO, String communityName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String loggedUserName = authentication.getName();
 
@@ -61,9 +67,54 @@ public class PostService {
         return postResponseDTO;
     }
 
-    public void deletePost(Long postId){
+    public void deletePost(Long postId) {
         Post post = postRepo.findById(postId)
-                .orElseThrow( () -> new DoesNotExistException("Post not found"));
+                .orElseThrow(() -> new DoesNotExistException("Post not found"));
         postRepo.delete(post);
     }
+
+    public PostResponseDTO patchPost(PostRequestDTO postRequestDTO, Long postId) {
+
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new DoesNotExistException("Post does not exist"));
+        if(postRequestDTO.getTitle()!=null && !postRequestDTO.getTitle().equalsIgnoreCase(post.getTitle())){
+            post.setTitle(postRequestDTO.getTitle());
+        }
+        if(postRequestDTO.getBody()!=null && !postRequestDTO.getBody().equalsIgnoreCase(post.getBody())){
+            post.setBody(postRequestDTO.getBody());
+        }
+
+        postRepo.save(post);
+        return postToDTO(post);
+    }
+
+    public PostResponseDTO getPost(Long postId){
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new DoesNotExistException("Post does not exist"));
+        PostResponseDTO postResponseDTO = postToDTO(post);
+        return postResponseDTO;
+    }
+    public List<PostResponseDTO> getPosts(){
+        List<Post> posts = postRepo.findAll();
+        List<PostResponseDTO> postResponseDTOList = new ArrayList<>();
+        for (Post p : posts) {
+            postResponseDTOList.add(postToDTO(p));
+        }
+        return postResponseDTOList;
+    }
+
+    public List<CommentResponseDTO> getCommentsByPostId(Long postId){
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new DoesNotExistException("Post does not exist"));
+        List<Comment> commentList = post.getCommentList();
+        List<CommentResponseDTO> commentResponseDTOList = new ArrayList<>();
+
+        for (Comment c : commentList) {
+            if (c.getParentComment() == null) {
+                commentResponseDTOList.add(commentService.commentToDTO(c));
+            }
+        }
+        return commentResponseDTOList;
+    }
 }
+

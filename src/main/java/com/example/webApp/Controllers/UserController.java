@@ -1,5 +1,7 @@
 package com.example.webApp.Controllers;
 
+import com.example.webApp.DataTransferObjects.PostRequestDTO;
+import com.example.webApp.DataTransferObjects.PostResponseDTO;
 import com.example.webApp.DataTransferObjects.UserRequestDTO;
 import com.example.webApp.DataTransferObjects.UserResponseDTO;
 import com.example.webApp.Services.UserService;
@@ -7,6 +9,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class UserController {
@@ -29,8 +33,26 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{username}")
-    public ResponseEntity<?> deleteUser(@PathVariable String userName) {
-        service.deleteUser(userName);
+    public ResponseEntity<?> deleteUser(@PathVariable String username) {
+        service.deleteUser(username);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<?> patchUser(@RequestBody UserRequestDTO userRequestDTO, @PathVariable Long userId){
+        UserResponseDTO userResponseDTO = service.patchUser(userRequestDTO, userId);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(userResponseDTO);
+    }
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable Long userId){
+        UserResponseDTO userResponseDTO = service.getUser(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTO);
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<?> getUsers(){
+        List<UserResponseDTO> userResponseDTOList = service.getUsers();
+        return ResponseEntity.status(HttpStatus.OK).body(userResponseDTOList);
     }
 }
